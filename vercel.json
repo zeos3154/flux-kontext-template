@@ -1,0 +1,107 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": ".next",
+  "framework": "nextjs",
+  "installCommand": "npm install",
+  "devCommand": "npm run dev",
+  "regions": ["hkg1", "sin1", "sfo1"],
+  "env": {
+    "NODE_ENV": "production"
+  },
+  "build": {
+    "env": {
+      "NEXT_TELEMETRY_DISABLED": "1"
+    }
+  },
+  "functions": {
+    "src/app/api/**/*.ts": {
+      "maxDuration": 60
+    }
+  },
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, POST, PUT, DELETE, OPTIONS"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "Content-Type, Authorization"
+        }
+      ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/api/v1/flux/text-to-image/pro",
+      "destination": "/api/flux-kontext?action=text-to-image-pro"
+    },
+    {
+      "source": "/api/v1/flux/text-to-image/max", 
+      "destination": "/api/flux-kontext?action=text-to-image-max"
+    },
+    {
+      "source": "/api/v1/flux/image-edit/pro",
+      "destination": "/api/flux-kontext?action=edit-image-pro"
+    },
+    {
+      "source": "/api/v1/flux/image-edit/max",
+      "destination": "/api/flux-kontext?action=edit-image-max"
+    },
+    {
+      "source": "/api/v1/(.*)",
+      "destination": "/api/$1"
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "header",
+          "key": "x-forwarded-proto",
+          "value": "http"
+        }
+      ],
+      "destination": "https://fluxkontext.space/$1",
+      "statusCode": 301
+    },
+    {
+      "source": "/docs",
+      "destination": "/resources/api",
+      "permanent": true
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.fluxkontext.space"
+        }
+      ],
+      "destination": "https://fluxkontext.space/$1",
+      "statusCode": 301
+    },
+    {
+      "source": "/free",
+      "destination": "/resources",
+      "statusCode": 301
+    },
+    {
+      "source": "/api-docs",
+      "destination": "/resources/api",
+      "statusCode": 301
+    },
+    {
+      "source": "/documentation",
+      "destination": "/resources/api",
+      "statusCode": 301
+    }
+  ]
+} 
