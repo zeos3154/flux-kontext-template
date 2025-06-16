@@ -198,8 +198,7 @@ src/lib/
 src/hooks/
 ├── 📄 useAuth.ts                # 认证状态管理
 ├── 📄 useCredits.ts             # 积分管理
-├── 📄 useImageGeneration.ts     # 图像生成状态
-└── [其他自定义hooks...]
+└── 📄 useImageGeneration.ts     # 图像生成状态管理
 ```
 
 #### 📝 类型定义 (`src/types/`)
@@ -209,8 +208,7 @@ src/types/
 ├── 📄 auth.ts                   # 认证相关类型
 ├── 📄 payment.ts                # 支付相关类型
 ├── 📄 database.ts               # 数据库类型
-├── 📄 api.ts                    # API响应类型
-└── [其他类型定义...]
+└── 📄 api.ts                    # API接口类型
 ```
 
 ### 📁 静态资源 (`public/`)
@@ -440,3 +438,63 @@ FluxKontext.space是一个功能完整的AI图像生成平台，具有：
 - 📄 PAYMENT_SECURITY_GUIDE.md - 支付安全指南
 - 📄 env.example - 环境变量配置示例
 - 📁 scripts/ - 各种检查和设置脚本 
+
+## 🎓 Next.js 学习指导系统
+
+### 📚 新增 Cursor 学习规则
+
+我们为Next.js初学者特别创建了一套完整的学习指导系统，包含以下规则文件：
+
+#### 🎯 学习导师规则 (`.cursor/rules/nextjs-learning-mentor.mdc`)
+- 💝 亦师亦友的学习伙伴角色设定
+- 🔥 基于FluxKontext项目的实战学习路径
+- 💪 情感支持和鼓励话术库
+- 📈 渐进式学习方法指导
+
+#### 🏗️ 项目结构指南 (`.cursor/rules/project-structure-guide.mdc`)
+- 📁 完整的文件夹组织逻辑解释
+- 🔗 文件关系图和数据流向
+- 🎨 组件设计模式和最佳实践
+- 🛠️ 开发工作流程指导
+
+#### 🧠 编程概念解释 (`.cursor/rules/coding-concepts-explained.mdc`)
+- 🎭 用生活比喻解释复杂编程概念
+- 🧩 React组件 = 乐高积木块
+- 🏠 Next.js App Router = 城市地图
+- 🍽️ API Routes = 餐厅服务员
+- 💡 让编程概念变得通俗易懂
+
+#### 🐛 调试帮助指南 (`.cursor/rules/debugging-helper.mdc`)
+- 🔍 常见错误类型和解决方案
+- 🛠️ 调试工具使用指南
+- 🎯 三步调试法策略
+- 💪 调试心态建设和技能提升
+
+### 🎓 学习路径建议
+
+**初学者路线 (第1-2周)**：
+1. 先运行项目，看看实际效果
+2. 从 `src/app/page.tsx` 开始理解页面组件
+3. 学习基本的 React hooks (useState, useEffect)
+4. 理解组件 props 传递概念
+
+**进阶路线 (第3-4周)**：
+1. 深入理解服务器组件 vs 客户端组件
+2. 学习 API 路由的工作原理
+3. 掌握 TypeScript 基础类型定义
+4. 理解 Next.js App Router 路由系统
+
+**高级路线 (第2个月)**：
+1. 掌握中间件的使用
+2. 理解 SSR/SSG 渲染概念
+3. 学习性能优化技巧
+4. 深入业务逻辑和架构设计
+
+### 💡 学习提示
+
+- **不要害怕犯错**：每个错误都是学习的机会
+- **多动手实践**：理论结合实际代码修改
+- **善用调试工具**：console.log 是你的好朋友
+- **耐心循序渐进**：编程学习需要时间积累
+
+记住：学习编程不是智商的竞赛，而是耐心和实践的积累！你一定可以的！💪🚀 
