@@ -1,5 +1,155 @@
 ---
-description:
-globs:
-alwaysApply: false
+description: 
+globs: 
+alwaysApply: true
 ---
+# FluxKontext 项目结构完全指南 📁
+
+## 🎯 文件夹组织逻辑
+
+### 根目录核心文件
+- [package.json](mdc:package.json) - 项目依赖管理，相当于"购物清单"
+- [next.config.js](mdc:next.config.js) - Next.js配置，告诉框架怎么工作
+- [tailwind.config.ts](mdc:tailwind.config.ts) - 样式配置，控制网站外观
+- [middleware.ts](mdc:middleware.ts) - 中间件，处理请求前的逻辑
+- [env.example](mdc:env.example) - 环境变量模板，项目需要的密钥配置
+
+## 🏗️ src/ 目录详解
+
+### 📱 app/ - 页面路由 (Next.js App Router)
+```
+src/app/
+├── layout.tsx          # 全局布局，所有页面的"外壳"
+├── page.tsx           # 首页 (/)
+├── globals.css        # 全局样式
+├── generate/          # 生成页面 (/generate)
+├── pricing/           # 定价页面 (/pricing)
+├── dashboard/         # 仪表板 (/dashboard)
+└── api/              # 后端API接口
+    ├── generate/     # 图像生成API
+    ├── auth/         # 认证API
+    └── payment/      # 支付API
+```
+
+**重要概念**: Next.js的文件系统路由
+- 文件夹名称 = URL路径
+- `page.tsx` = 该路径的页面组件
+- `layout.tsx` = 该路径及子路径的布局
+
+### 🧩 components/ - 可复用组件
+```
+src/components/
+├── FluxKontextGenerator.tsx  # 🎯 主要功能组件 (2987行)
+├── Navigation.tsx           # 导航栏
+├── PricingContent.tsx       # 定价页面内容
+├── StandardTurnstile.tsx    # 安全验证组件
+├── ui/                      # 基础UI组件库
+│   ├── button.tsx          # 按钮组件
+│   ├── input.tsx           # 输入框组件
+│   └── card.tsx            # 卡片组件
+└── providers/              # React Context提供者
+```
+
+**组件分类逻辑**:
+- 业务组件: 包含业务逻辑的复杂组件
+- UI组件: 纯展示的基础组件
+- 提供者: 全局状态管理
+
+### 📚 lib/ - 业务逻辑库
+```
+src/lib/
+├── flux-kontext.ts      # 🎯 AI图像生成核心逻辑
+├── auth.ts              # 用户认证逻辑
+├── database.ts          # 数据库操作
+├── payment.ts           # 支付处理
+├── user-tiers.ts        # 用户等级管理
+├── services/            # 外部服务集成
+├── utils/               # 工具函数
+└── types/               # TypeScript类型定义
+```
+
+**业务逻辑分层**:
+- 核心服务: 直接处理业务的主要逻辑
+- 工具函数: 可复用的辅助函数
+- 类型定义: TypeScript接口和类型
+
+## 🔗 文件关系图
+
+```
+用户访问页面
+    ↓
+app/page.tsx (服务器组件)
+    ↓
+components/HomeContent.tsx (展示组件)
+    ↓
+components/FluxKontextGenerator.tsx (核心功能)
+    ↓
+lib/flux-kontext.ts (AI服务调用)
+    ↓
+app/api/generate/route.ts (API端点)
+```
+
+## 🎨 组件设计模式
+
+### 页面组件分离模式
+```typescript
+// ✅ 推荐: 服务器组件 + 客户端组件分离
+// app/generate/page.tsx (服务器组件)
+export const metadata = { title: "Generate" }
+export default function GeneratePage() {
+  return <GenerateContent />
+}
+
+// components/GenerateContent.tsx (客户端组件)
+"use client"
+export function GenerateContent() {
+  // 交互逻辑在这里
+}
+```
+
+### API路由模式
+```typescript
+// app/api/generate/route.ts
+export async function POST(request: Request) {
+  // 处理POST请求
+  return NextResponse.json({ success: true })
+}
+```
+
+## 📝 命名约定
+
+### 文件命名
+- **组件文件**: PascalCase (UserProfile.tsx)
+- **工具文件**: kebab-case (user-utils.ts)
+- **页面文件**: page.tsx (固定名称)
+- **布局文件**: layout.tsx (固定名称)
+
+### 目录结构
+- **功能模块**: 按功能分组 (auth/, payment/)
+- **类型分组**: 按文件类型分组 (components/, lib/)
+- **路由结构**: 镜像URL结构 (app/dashboard/)
+
+## 🔧 开发工作流
+
+### 新增功能的步骤
+1. **创建页面**: 在 `app/` 下添加路由
+2. **编写组件**: 在 `components/` 下创建UI
+3. **添加逻辑**: 在 `lib/` 下编写业务逻辑
+4. **创建API**: 在 `app/api/` 下添加接口
+5. **更新类型**: 在 `lib/types/` 下定义类型
+
+### 调试路径
+1. **检查页面**: app/ 目录下的页面组件
+2. **检查组件**: components/ 目录下的组件逻辑
+3. **检查API**: app/api/ 目录下的接口
+4. **检查逻辑**: lib/ 目录下的业务代码
+
+## 🎓 学习建议
+
+### 按重要性学习文件
+1. **入门级**: [src/app/page.tsx](mdc:src/app/page.tsx) - 简单页面组件
+2. **进阶级**: [src/components/HomeContent.tsx](mdc:src/components/HomeContent.tsx) - 展示组件
+3. **高级**: [src/components/FluxKontextGenerator.tsx](mdc:src/components/FluxKontextGenerator.tsx) - 复杂业务组件
+4. **专家级**: [src/lib/flux-kontext.ts](mdc:src/lib/flux-kontext.ts) - 核心业务逻辑
+
+记住: 不要被文件数量吓到，每个文件都有它的职责，理解了职责就理解了整体架构！

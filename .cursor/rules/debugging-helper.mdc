@@ -1,5 +1,265 @@
 ---
-description:
-globs:
+description: 当调试遇到问题的时候 ，阅读此规则
+globs: 
 alwaysApply: false
 ---
+# 调试问题解决指南 🐛🔧
+
+## 🎯 遇到错误不要慌！
+
+**记住**: 错误是学习的最好老师，每个错误都在教你新的知识！
+
+## 🔍 常见错误类型和解决方案
+
+### 1. 编译错误 (TypeScript/ESLint)
+
+#### ❌ "use client" 和 metadata 冲突
+```typescript
+// 错误示例
+"use client"
+export const metadata = { title: "Test" }  // 这会报错！
+```
+
+**🔧 解决方案**: 分离服务器组件和客户端组件
+```typescript
+// page.tsx (服务器组件)
+export const metadata = { title: "Test" }
+export default function Page() {
+  return <PageContent />
+}
+
+// PageContent.tsx (客户端组件)  
+"use client"
+export function PageContent() {
+  // 交互逻辑
+}
+```
+
+#### ❌ 导入路径错误
+```
+Module not found: Can't resolve '@/components/Button'
+```
+
+**🔧 解决方案**: 检查文件路径和导入语句
+- 确认文件存在于正确位置
+- 检查文件名大小写是否匹配
+- 验证 tsconfig.json 中的路径配置
+
+### 2. 运行时错误
+
+#### ❌ Cannot read property of undefined
+```javascript
+const user = null
+console.log(user.name)  // 错误！
+```
+
+**🔧 解决方案**: 使用可选链和默认值
+```typescript
+// 安全的写法
+console.log(user?.name || 'Guest')
+// 或者
+if (user) {
+  console.log(user.name)
+}
+```
+
+#### ❌ Hook 在条件语句中使用
+```typescript
+if (condition) {
+  const [state, setState] = useState()  // 错误！
+}
+```
+
+**🔧 解决方案**: Hook 必须在顶层调用
+```typescript
+const [state, setState] = useState()
+if (condition) {
+  // 使用 state
+}
+```
+
+### 3. 网络和API错误
+
+#### ❌ Failed to fetch 或 500 Internal Server Error
+**调试步骤**:
+1. 检查网络连接
+2. 查看浏览器开发者工具的 Network 面板
+3. 检查 API 端点是否正确
+4. 验证环境变量配置
+
+#### ❌ CORS 错误
+```
+Access to fetch blocked by CORS policy
+```
+
+**🔧 解决方案**: 检查 [next.config.js](mdc:next.config.js) 配置
+```javascript
+// next.config.js
+async headers() {
+  return [
+    {
+      source: "/api/:path*",
+      headers: [
+        { key: "Access-Control-Allow-Origin", value: "*" },
+      ],
+    },
+  ]
+}
+```
+
+## 🛠️ 调试工具使用指南
+
+### 1. 浏览器开发者工具
+- **Console**: 查看 JavaScript 错误和 console.log 输出
+- **Network**: 查看 API 请求和响应
+- **Elements**: 检查 HTML 结构和 CSS 样式
+- **Sources**: 设置断点调试代码
+
+### 2. VS Code 调试功能
+- 设置断点: 点击行号左侧
+- 使用 console.log 打印变量值
+- 使用 debugger 语句暂停执行
+
+### 3. Next.js 特有调试
+```typescript
+// 在服务器组件中调试
+console.log("这会在终端显示")
+
+// 在客户端组件中调试  
+"use client"
+console.log("这会在浏览器控制台显示")
+```
+
+## 🔧 调试策略
+
+### 🎯 三步调试法
+
+#### 第一步: 定位问题
+1. **读错误信息**: 仔细阅读错误提示
+2. **找到错误位置**: 根据堆栈跟踪找到出错文件
+3. **理解错误原因**: 思考为什么会发生这个错误
+
+#### 第二步: 分析问题
+1. **检查相关代码**: 查看出错的代码片段
+2. **验证数据**: 确认变量值是否符合预期
+3. **追踪数据流**: 跟踪数据从哪里来，到哪里去
+
+#### 第三步: 解决问题
+1. **小步修改**: 一次只改一个地方
+2. **测试验证**: 修改后立即测试
+3. **记录学习**: 记住这个错误和解决方案
+
+### 🔍 排查思路
+
+#### 当组件不显示时
+```typescript
+// 检查清单:
+// 1. 组件是否正确导入？
+import { MyComponent } from './MyComponent'
+
+// 2. 组件是否正确使用？
+<MyComponent />
+
+// 3. 是否有条件渲染阻止显示？
+{condition && <MyComponent />}
+
+// 4. CSS 是否隐藏了组件？
+<MyComponent className="hidden" />  // 检查这里！
+```
+
+#### 当 API 不工作时
+```typescript
+// 检查清单:
+// 1. API 路由文件是否存在？
+// app/api/test/route.ts
+
+// 2. HTTP 方法是否匹配？
+export async function GET() { ... }  // 确保匹配 fetch('/api/test')
+
+// 3. 环境变量是否配置？
+process.env.DATABASE_URL  // 检查 .env.local
+
+// 4. 是否有错误处理？
+try {
+  const result = await fetch('/api/test')
+  if (!result.ok) throw new Error('API failed')
+} catch (error) {
+  console.error('错误:', error)
+}
+```
+
+## 📝 常用调试代码片段
+
+### 打印变量值
+```typescript
+// 简单打印
+console.log('变量值:', variable)
+
+// 格式化打印
+console.log('%c调试信息', 'color: blue; font-size: 16px', {
+  user,
+  status,
+  timestamp: new Date()
+})
+
+// 表格形式打印数组
+console.table(arrayData)
+```
+
+### 检查组件渲染
+```typescript
+"use client"
+import { useEffect } from 'react'
+
+export function MyComponent({ data }) {
+  // 检查组件是否渲染
+  console.log('MyComponent 渲染了', { data })
+  
+  // 检查数据变化
+  useEffect(() => {
+    console.log('data 变化了:', data)
+  }, [data])
+  
+  return <div>{data}</div>
+}
+```
+
+### API 调试模板
+```typescript
+// app/api/debug/route.ts
+export async function GET() {
+  try {
+    console.log('API 被调用了')
+    
+    // 检查环境变量
+    console.log('环境变量检查:', {
+      NODE_ENV: process.env.NODE_ENV,
+      DATABASE_URL: !!process.env.DATABASE_URL,
+    })
+    
+    const data = { message: 'API 工作正常', timestamp: new Date() }
+    console.log('返回数据:', data)
+    
+    return Response.json(data)
+  } catch (error) {
+    console.error('API 错误:', error)
+    return Response.json({ error: error.message }, { status: 500 })
+  }
+}
+```
+
+## 🎓 调试心态建设
+
+### 💪 遇到错误时的正确心态
+- **不要恐慌**: 错误是正常的，每个程序员都会遇到
+- **保持好奇**: 把错误当作学习机会
+- **系统思考**: 一步步分析，不要盲目修改
+- **寻求帮助**: 不懂就问，没有愚蠢的问题
+
+### 🎯 提高调试技能的方法
+1. **多练习**: 故意制造一些错误，然后练习修复
+2. **阅读文档**: 理解工具和框架的工作原理
+3. **学习他人**: 看看其他人是如何解决相似问题的
+4. **记录总结**: 建立自己的错误解决方案库
+
+记住: 调试能力是程序员最重要的技能之一，每次解决问题都让你变得更强！🚀
